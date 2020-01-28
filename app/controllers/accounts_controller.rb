@@ -2,12 +2,12 @@ class AccountsController < ApplicationController
 
     def index
         accounts = Account.all
-        render json: accounts, status: :ok
+        render json: AccountSerializer.new(accounts), status: :ok
     end
     
     def show
         account = Account.find(params[:id])
-        render json: account, status: :ok
+        render json: AccountSerializer.new(account), status: :ok
     end
     
     def create
