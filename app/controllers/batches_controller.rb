@@ -2,12 +2,12 @@ class BatchesController < ApplicationController
 
     def index
         batches = Batch.all
-        render json: batches, status: :ok
+        render json: BatchSerializer.new(batches), status: :ok
     end
     
     def show
         batch = Batch.find(params[:id])
-        render json: batch, status: :ok
+        render json: BatchSerializer.new(batch), status: :ok
     end
     
     def create
