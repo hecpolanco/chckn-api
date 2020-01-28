@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_28_174806) do
+ActiveRecord::Schema.define(version: 2020_01_28_185653) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_174806) do
     t.integer "account_id"
     t.integer "batch_id"
     t.datetime "date"
-    t.string "type"
+    t.string "flowtype"
     t.string "name"
     t.integer "amount"
     t.datetime "created_at", precision: 6, null: false
