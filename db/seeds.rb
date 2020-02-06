@@ -16,5 +16,5 @@ Batch.destroy_all
 janbatch = Batch.create(id: 1, account_id: hecaccount.id, date: "2020-01-01")
 
 Cashflow.destroy_all
-hecincome = Cashflow.create(id: 1, account_id: hecaccount.id, batch_id: janbatch.id, date: "2020-01-15", name: "Paycheck", flowtype: "Income", amount: 100005)
-hecexpense = Cashflow.create(id: 2, account_id: hecaccount.id, batch_id: janbatch.id, date: "2020-01-28", name: "Cellphone", flowtype: "Expense", amount: 10005)
+# hecincome = Cashflow.create(id: 1, account_id: hecaccount.id, batch_id: janbatch.id, date: "2020-01-15", name: "Paycheck", flowtype: "Income", amount: 100005)
+# hecexpense = Cashflow.create(id: 2, account_id: hecaccount.id, batch_id: janbatch.id, date: "2020-01-28", name: "Cellphone", flowtype: "Expense", amount: 10005)

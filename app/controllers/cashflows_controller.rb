@@ -1,8 +1,24 @@
 class CashflowsController < ApplicationController
 
+    @@income = Cashflow.where(flowtype: "Income")
+        .map{ |transaction| transaction.amount }
+        .reduce(0) { |sum, num| sum + num }
+
+    @@expense = Cashflow.where(flowtype: "Expense")
+        .map{ |transaction| transaction.amount }
+        .reduce(0) { |sum, num| sum + num }
+
     def index
-        cashflows = Cashflow.all
-        render json: cashflows, status: :ok
+        if params[:start_date] && params[:end_date]
+            start_date = params[:start_date]
+            end_date = params[:end_date]
+
+            cashflows = Cashflow.where(date: start_date..end_date)
+            render json: cashflows, status: :ok
+        else
+            cashflows = Cashflow.all
+            render json: cashflows, status: :ok
+        end
     end
     
     def show
@@ -32,6 +48,61 @@ class CashflowsController < ApplicationController
         cashflow = Cashflow.find(params[:id])
         cashflow.destroy
         render json: cashflow, status: :ok
+    end
+
+    def income
+        if params[:start_date] && params[:end_date]
+            start_date = params[:start_date]
+            end_date = params[:end_date]
+
+            income = Cashflow.where(date: start_date..end_date, flowtype: "Income")
+            .map{ |transaction| transaction.amount }
+            .reduce(0) { |sum, num| sum + num }
+            render json: income, status: :ok
+        else
+            income = Cashflow.where(flowtype: "Income")
+            .map{ |transaction| transaction.amount }
+            .reduce(0) { |sum, num| sum + num }
+            render json: income, status: :ok
+        end
+    end
+
+    def expense
+        if params[:start_date] && params[:end_date]
+            start_date = params[:start_date]
+            end_date = params[:end_date]
+
+            expense = Cashflow.where(date: start_date..end_date, flowtype: "Expense")
+            .map{ |transaction| transaction.amount }
+            .reduce(0) { |sum, num| sum + num }
+            render json: expense, status: :ok
+        else
+            expense = Cashflow.where(flowtype: "Expense")
+            .map{ |transaction| transaction.amount }
+            .reduce(0) { |sum, num| sum + num }
+            render json: expense, status: :ok
+        end
+    end
+
+    def balance
+        if params[:start_date] && params[:end_date]
+            start_date = params[:start_date]
+            end_date = params[:end_date]
+
+            income = Cashflow.where(date: start_date..end_date, flowtype: "Income")
+            .map{ |transaction| transaction.amount }
+            .reduce(0) { |sum, num| sum + num }
+
+            expense = Cashflow.where(date: start_date..end_date, flowtype: "Expense")
+            .map{ |transaction| transaction.amount }
+            .reduce(0) { |sum, num| sum + num }
+
+            @balance = income - expense
+            render json: @balance, status: :ok
+        else
+            @balance = @@income - @@expense
+            render json: @balance, status: :ok
+        end
     end
 
     private
