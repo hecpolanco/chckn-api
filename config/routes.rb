@@ -7,5 +7,7 @@ Rails.application.routes.draw do
   get '/cashflows/expense', to: 'cashflows#expense'
   get '/cashflows/balance/:start_date&:end_date', to: 'cashflows#balance'
   get '/cashflows/balance', to: 'cashflows#balance'
+  get '/cashflows/spend_allowance/:start_date&:end_date', to: 'cashflows#spend_allowance'
+  get '/cashflows/find_end_date', to: 'cashflows#find_end_date'
   resources :users, :accounts, :cashflows, :batches
 end

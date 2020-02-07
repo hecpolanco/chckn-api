@@ -1,3 +1,5 @@
+require 'date'
+
 class CashflowsController < ApplicationController
 
     @@income = Cashflow.where(flowtype: "Income")
@@ -13,7 +15,7 @@ class CashflowsController < ApplicationController
             start_date = params[:start_date]
             end_date = params[:end_date]
 
-            cashflows = Cashflow.where(date: start_date..end_date)
+            cashflows = Cashflow.where(date: start_date..end_date).sort_by{|transaction| transaction.date}
             render json: cashflows, status: :ok
         else
             cashflows = Cashflow.all
@@ -104,6 +106,36 @@ class CashflowsController < ApplicationController
             render json: @balance, status: :ok
         end
     end
+
+    def spend_allowance
+        if params[:start_date] && params[:end_date]
+            start_date = params[:start_date]
+            end_date = params[:end_date]
+
+            income = Cashflow.where(date: start_date..end_date, flowtype: "Income")
+            .map{ |transaction| transaction.amount }
+            .reduce(0) { |sum, num| sum + num }
+
+            expense = Cashflow.where(date: start_date..end_date, flowtype: "Expense")
+            .map{ |transaction| transaction.amount }
+            .reduce(0) { |sum, num| sum + num }
+
+            balance = income - expense
+            days = (Date.parse(end_date) - Date.parse(start_date)).to_i
+            
+            spend_allowance = balance / days
+
+            render json: spend_allowance, status: :ok
+        end
+    end
+
+        def find_end_date
+            year = 2020
+            month = 2
+            start_date = Date.new(year, month, 1)
+            end_date = Date.new(year, month, -1)
+            render json: [start_date, end_date], status: :ok
+        end
 
     private
 
