@@ -11,9 +11,11 @@ class CashflowsController < ApplicationController
         .reduce(0) { |sum, num| sum + num }
 
     def index
-        if params[:start_date] && params[:end_date]
-            start_date = params[:start_date]
-            end_date = params[:end_date]
+        if params[:date]
+            year = Date.parse(params[:date]).year
+            month = Date.parse(params[:date]).month
+            start_date = Date.new(year, month, 1)
+            end_date = Date.new(year, month, -1)
 
             cashflows = Cashflow.where(date: start_date..end_date).sort_by{|transaction| transaction.date}
             render json: cashflows, status: :ok
@@ -53,9 +55,11 @@ class CashflowsController < ApplicationController
     end
 
     def income
-        if params[:start_date] && params[:end_date]
-            start_date = params[:start_date]
-            end_date = params[:end_date]
+        if params[:date]
+            year = Date.parse(params[:date]).year
+            month = Date.parse(params[:date]).month
+            start_date = Date.new(year, month, 1)
+            end_date = Date.new(year, month, -1)
 
             income = Cashflow.where(date: start_date..end_date, flowtype: "Income")
             .map{ |transaction| transaction.amount }
@@ -70,9 +74,11 @@ class CashflowsController < ApplicationController
     end
 
     def expense
-        if params[:start_date] && params[:end_date]
-            start_date = params[:start_date]
-            end_date = params[:end_date]
+        if params[:date]
+            year = Date.parse(params[:date]).year
+            month = Date.parse(params[:date]).month
+            start_date = Date.new(year, month, 1)
+            end_date = Date.new(year, month, -1)
 
             expense = Cashflow.where(date: start_date..end_date, flowtype: "Expense")
             .map{ |transaction| transaction.amount }
@@ -87,9 +93,11 @@ class CashflowsController < ApplicationController
     end
 
     def balance
-        if params[:start_date] && params[:end_date]
-            start_date = params[:start_date]
-            end_date = params[:end_date]
+        if params[:date]
+            year = Date.parse(params[:date]).year
+            month = Date.parse(params[:date]).month
+            start_date = Date.new(year, month, 1)
+            end_date = Date.new(year, month, -1)
 
             income = Cashflow.where(date: start_date..end_date, flowtype: "Income")
             .map{ |transaction| transaction.amount }
@@ -108,9 +116,11 @@ class CashflowsController < ApplicationController
     end
 
     def spend_allowance
-        if params[:start_date] && params[:end_date]
-            start_date = params[:start_date]
-            end_date = params[:end_date]
+        if params[:date]
+            year = Date.parse(params[:date]).year
+            month = Date.parse(params[:date]).month
+            start_date = Date.new(year, month, 1)
+            end_date = Date.new(year, month, -1)
 
             income = Cashflow.where(date: start_date..end_date, flowtype: "Income")
             .map{ |transaction| transaction.amount }
@@ -121,7 +131,7 @@ class CashflowsController < ApplicationController
             .reduce(0) { |sum, num| sum + num }
 
             balance = income - expense
-            days = (Date.parse(end_date) - Date.parse(start_date)).to_i
+            days = (end_date - start_date).to_i
             
             spend_allowance = balance / days
 
@@ -129,13 +139,17 @@ class CashflowsController < ApplicationController
         end
     end
 
-        def find_end_date
-            year = 2020
-            month = 2
+    def find_end_date
+        if params[:date]
+            year = Date.parse(params[:date]).year
+            month = Date.parse(params[:date]).month
             start_date = Date.new(year, month, 1)
             end_date = Date.new(year, month, -1)
-            render json: [start_date, end_date], status: :ok
+
+            cashflows = Cashflow.where(date: start_date..end_date).sort_by{|transaction| transaction.date}
+            render json: cashflows, status: :ok
         end
+    end
 
     private
 
